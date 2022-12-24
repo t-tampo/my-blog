@@ -15,7 +15,10 @@ async function bootstrap() {
   prismaService.enableShutdownHooks(app);
   prismaService.enableLogger(winstonLogger);
 
+  console.log(`PORT: ${pbEnv.Port}`);
   await app.listen(pbEnv.Port, '0.0.0.0');
   winstonLogger.log(`PORT: ${pbEnv.Port}`);
+  winstonLogger.log(`NodeEnv: ${pbEnv.NodeEnv}`);
+  winstonLogger.log(`DatabaseUrl: ${pbEnv.DatabaseUrl}`);
 }
 bootstrap();

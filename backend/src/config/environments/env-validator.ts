@@ -1,11 +1,14 @@
+import { plainToClass } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
-  IsNumber,
+  IsNumberString,
   IsString,
+  IsUrl,
   validateSync,
 } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+// import * as dotenv from 'dotenv';
+// import * as path from 'path';
 
 enum NodeEnvEnum {
   Development = 'development',
@@ -14,7 +17,6 @@ enum NodeEnvEnum {
 }
 
 /**
- * ①
  * バリデーションしたい環境変数がある場合はここに記載してください。
  * バリデーションに失敗するとアプリケーションは起動しません。
  */
@@ -22,18 +24,33 @@ export class EnvValidator {
   @IsEnum(NodeEnvEnum)
   NODE_ENV: NodeEnvEnum;
 
-  @IsNumber()
-  PORT = 3333;
+  @IsNumberString()
+  PORT = '3333';
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   DATABASE_URL: string;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // CONTENTS_BUCKET_NAME: string;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // GCP_PROJECT_ID: string;
+
+  // @IsNotEmpty()
+  // @IsUrl()
+  // MICROCMS_ENDPOINT: string;
+
+  // @IsNotEmpty()
+  // @IsString()
+  // MICROCMS_KEY: string;
 }
 
 /**
- * ②
- * @param config バリデーション対象の Record<string, any>。今回は .env.development.local と 環境変数が合体したもの
- * @returns バリデーション済の Record<string, any>
+ * @param config 実行環境の環境変数。これが優先されます。
+ * @returns
  */
 export function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToClass(EnvValidator, config, {
@@ -45,9 +62,7 @@ export function validate(config: Record<string, unknown>) {
   });
 
   if (errors.length > 0) {
-    console.error(errors);
-    throw new Error('Environment validation failed.');
+    throw new Error(errors.toString());
   }
-
   return validatedConfig;
 }

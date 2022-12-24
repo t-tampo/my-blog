@@ -19,7 +19,6 @@ resource "google_artifact_registry_repository" "blog-backend-training-app" {
   format        = "DOCKER"
 }
 
-
 # frontendアプリケーション用の Artifact Registry リポジトリ
 resource "google_artifact_registry_repository" "blog-frontend-training-app" {
   provider = google-beta
