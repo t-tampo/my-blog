@@ -1,0 +1,17 @@
+steps:
+  - id: "apply-migrations"
+    name: "gcr.io/google-appengine/exec-wrapper"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "/buildstep/execute.sh -i Prismaが使えるコンテナイメージ -e DATABASE_URL=$$DATABASE_URL -s $_CLOUDSQL_INSTANCE_FULL_NAME -- yarn prisma migrate deploy"
+    secretEnv: ["DATABASE_URL"]
+    dir: "google-cloud-prisma-migrate"
+timeout: 2000s
+substitutions:
+  _CLOUDSQL_INSTANCE_FULL_NAME: "Cloud SQL インスタンスの名前（my-project:us-central1:my_cloudsql_instance みたいなやつ）"
+  _ARTIFACT_REPOSITORY_IMAGE_NAME: "Artifact Registry にあるイメージ名"
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/DATABASE_URL/versions/latest
+      env: DATABASE_URL
